@@ -155,8 +155,7 @@ def persist_cleaning_state() -> None:
 
     for entry in audit_log[start_index:]:
         db.save_cleaning_step(run_id, entry)
-        st.session_state.persisted_audit_count +=
-
+        st.session_state.persisted_audit_count += 1
     # Update cleaned dataset and profile.
     cleaned_df = pipeline.get_cleaned_df()
     st.session_state.cleaned_df = cleaned_df
@@ -1052,3 +1051,4 @@ elif nav_page == "📥 Export & History":
 
                         st.write("**Cleaning History**")
                         st.json(session_info.get("cleaning_history") or [])
+
