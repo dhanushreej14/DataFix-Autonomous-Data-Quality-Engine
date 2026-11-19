@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 """Isolation Forest Anomaly Detection Module for DataFix Engine.
 
 This module provides unsupervised multivariate anomaly detection for tabular data
@@ -167,7 +167,6 @@ def detect_anomalies(
             f"Detected {anomaly_count} multivariate anomaly record(s) ({anomaly_pct}%)."
         ),
     }
-=======
 """
 DataFix - Autonomous Data Quality Engine
 Module: Anomaly Detection Engine (anomaly_detector.py)
@@ -185,8 +184,8 @@ from typing import Any, Dict, List, Optional, Union
 import numpy as np
 import pandas as pd
 
-from profiler import load_dataset, _to_serializable
 
+from ai.profiler import load_dataset, _to_serializable
 # Try importing scikit-learn IsolationForest
 try:
     from sklearn.ensemble import IsolationForest
@@ -212,7 +211,7 @@ def detect_anomalies(
         Structured JSON-compatible dictionary with flagged anomalies, scores, and explanations.
     """
     try:
-        df = load_dataset(data)
+        df = profiler.load_dataset(data)
     except Exception as e:
         return {
             "status": "error",
@@ -326,7 +325,7 @@ def detect_anomalies(
 
     for idx in anomaly_indices:
         reasons = []
-        row_dict = {str(k): _to_serializable(v) for k, v in df.iloc[idx].to_dict().items()}
+        row_dict = {str(k): profiler._to_serializable(v) for k, v in df.iloc[idx].to_dict().items()}
 
         for col in numeric_cols:
             val = converted_df[col].iloc[idx]
@@ -440,4 +439,3 @@ if __name__ == "__main__":
         print(json.dumps(res, indent=2))
     else:
         print("Usage: python anomaly_detector.py <path_to_csv>")
->>>>>>> 292dc96480eda95bafef48059664d729d9d0bcd1

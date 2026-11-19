@@ -1,228 +1,286 @@
-# 🗄️ DataFix – Database Module Cheat Sheet
+# 🗄️ DataFix – Autonomous Data Quality Engine
 
-Welcome to the **DataFix Database Module**! This guide is designed for the entire team (Backend, AI Engine, and Frontend) to easily connect and interact with our SQLite database (`datafix.db`).
+DataFix is an AI-powered data quality management application designed to analyze, identify, and improve the quality of structured datasets.
+
+It combines statistical profiling, automated anomaly detection, AI-driven recommendations, data-cleaning operations, and database-backed analysis history in an interactive Streamlit dashboard.
 
 ---
 
-## 🚀 Quick Start (How to Import)
+## 🚀 Key Features
 
-All database functions are pre-packaged and ready to use in any script across the project:
+### 1. Dataset Upload
+- Upload CSV and Excel datasets.
+- Validate supported file formats.
+- Preview uploaded datasets.
+- Generate a sample dataset for demonstration.
 
-```python
-from database.db import (
-    init_db,
-    save_upload_details,
-    save_quality_issue,
-    save_repair_history,
-    get_upload_history,
-    get_quality_issues,
-    get_repair_history,
-    display_upload_history,
-    display_repair_history,
-)
+### 2. Data Profiling
+- Dataset overview and column information.
+- Missing value analysis.
+- Duplicate record detection.
+- Numerical and categorical statistics.
+- Unique value analysis.
+- Data quality summary.
+
+### 3. Data Quality Analysis
+- Calculate dataset quality scores.
+- Identify missing values and duplicates.
+- Analyze numerical outliers.
+- Visualize data quality information.
+- Detect anomalies using machine learning.
+
+### 4. AI-Powered Recommendations
+- Generate automated data-cleaning recommendations.
+- Identify potential data quality problems.
+- Apply safe recommendations.
+- Require approval before destructive AI operations.
+
+### 5. Data Cleaning and Remediation
+- Missing value imputation.
+- Duplicate row removal.
+- Outlier clipping and filtering.
+- Text standardization.
+- Cleaning audit history.
+- Before-and-after data comparison.
+- Confirmation before destructive manual operations.
+
+### 6. Data Export
+- Export cleaned datasets as CSV.
+- Export cleaned datasets as Excel.
+- Download cleaning audit information as JSON.
+
+### 7. Analysis History
+- View previous analysis sessions.
+- Inspect profiling reports.
+- Review AI recommendations.
+- View cleaning history.
+- Compare initial and post-cleaning quality scores.
+
+Note: Previous session history stores analysis information and reports; it does not currently restore the original or cleaned DataFrame.
+
+---
+
+## 🛠️ Technology Stack
+
+| Component | Technology |
+|---|---|
+| Programming Language | Python |
+| Frontend | Streamlit |
+| Data Processing | Pandas, NumPy |
+| Machine Learning | Scikit-learn |
+| Data Visualization | Plotly |
+| Database | SQLite |
+| Excel Processing | OpenPyXL |
+| Testing | Pytest |
+
+---
+
+## 🏗️ System Architecture
+
+DataFix is organized into four major functional layers.
+
+**1. Frontend Layer**
+- Streamlit dashboard.
+- Dataset upload and preview.
+- Profiling and visualization.
+- Cleaning controls.
+- Export and history management.
+
+**2. Backend Layer**
+- Dataset ingestion and validation.
+- Statistical profiling.
+- Data-cleaning pipeline.
+
+**3. AI Layer**
+- Anomaly detection.
+- Missing value analysis.
+- Duplicate detection.
+- Inconsistency detection.
+- Quality scoring.
+- Automated recommendations and correction support.
+
+**4. Database Layer**
+- Analysis session management.
+- Profiling report storage.
+- AI recommendation storage.
+- Cleaning audit history.
+- Quality comparison records.
+
+---
+
+## 📁 Project Structure
+
+```text
+DataFix-Autonomous-Data-Quality-Engine/
+│
+├── ai/
+│   ├── anomaly_detector.py
+│   ├── correction_engine.py
+│   ├── duplicate_detector.py
+│   ├── inconsistency_detector.py
+│   ├── main.py
+│   ├── missing_values.py
+│   ├── profiler.py
+│   ├── quality_score.py
+│   └── recommender.py
+│
+├── backend/
+│   ├── cleaning.py
+│   ├── profiling.py
+│   └── upload.py
+│
+├── database/
+│   ├── db.py
+│   ├── manager.py
+│   └── schema.py
+│
+├── frontend/
+│   ├── app.py
+│   ├── index.html
+│   ├── script.js
+│   ├── style.css
+│   ├── styles.py
+│   └── visualizations.py
+│
+├── tests/
+│   ├── test_ai.py
+│   ├── test_cleaning.py
+│   ├── test_database.py
+│   ├── test_profiling.py
+│   └── test_upload.py
+│
+├── .gitignore
+├── datafix.db
+├── pytest.ini
+├── requirements.txt
+├── README.md
+├── test_database.py
+└── test_db.py
 ```
 
 ---
 
-## 📌 Complete Workflow Example
+## ⚙️ Installation and Setup
 
-Here is how the entire DataFix engine interacts with the database in 4 steps:
+### Prerequisites
 
-```python
-# 1. Initialize DB at server startup
-init_db()
+- Python 3.13 or compatible Python environment.
+- pip package manager.
+- Git.
 
-# 2. When a user uploads a dataset
-upload_id = save_upload_details(
-    filename="customer_data.csv",
-    num_rows=1500,
-    num_columns=12
-)
-# Returns: 1 (Primary Key)
+### Step 1: Clone the Repository
 
-# 3. When the AI Engine detects an issue
-issue_id = save_quality_issue(
-    upload_id=upload_id,
-    column_name="email",
-    issue_type="Missing Values",
-    num_issues=45
-)
-
-# 4. When the Repair Engine fixes the issue
-repair_id = save_repair_history(
-    upload_id=upload_id,
-    column_name="email",
-    repair_type="Imputed Default / Placeholder",
-    repaired_rows=45
-)
-
-# 5. Display summary in the terminal
-display_upload_history()
-display_repair_history()
+```bash
+git clone <YOUR_GITHUB_REPOSITORY_URL>
 ```
 
----
+### Step 2: Navigate to the Project
 
-## 📚 Function Reference
-
-### 1. `init_db()`
-Creates the database file and all required tables if they don't already exist.
-* **When to call**: Once at application / backend startup.
-* **Returns**: `True` if successful, `False` on error.
-
-```python
-init_db()
+```bash
+cd DataFix-Autonomous-Data-Quality-Engine
 ```
 
----
+### Step 3: Create a Virtual Environment
 
-### 2. `save_upload_details(filename, num_rows, num_columns, upload_time=None)`
-Saves metadata of an uploaded file into the `uploads` table.
-* **Parameters**:
-  * `filename` *(str)*: Name of the uploaded file (e.g. `"sales.csv"`).
-  * `num_rows` *(int)*: Total number of rows in the dataset.
-  * `num_columns` *(int)*: Total number of columns.
-  * `upload_time` *(str, optional)*: Timestamp. Defaults to current local time.
-* **Returns**: `upload_id` *(int)* – Pass this ID to the AI engine and repair logs.
-
-```python
-upload_id = save_upload_details("sales.csv", num_rows=1000, num_columns=10)
+```bash
+python -m venv .venv
 ```
 
----
+### Step 4: Activate the Environment
 
-### 3. `save_quality_issue(upload_id, column_name, issue_type, num_issues)`
-Logs a detected data quality issue into the `quality_issues` table.
-* **Parameters**:
-  * `upload_id` *(int)*: The ID of the dataset upload (Foreign Key).
-  * `column_name` *(str)*: The column containing issues (e.g. `"age"`, `"email"`).
-  * `issue_type` *(str)*: Category (e.g. `"Missing Values"`, `"Duplicates"`, `"Outliers"`).
-  * `num_issues` *(int)*: Count of issues found.
-* **Returns**: `issue_id` *(int)* or `None` if `upload_id` does not exist.
-
-```python
-save_quality_issue(upload_id=1, column_name="age", issue_type="Outliers", num_issues=12)
-```
-
----
-
-### 4. `save_repair_history(upload_id, column_name, repair_type, repaired_rows, repair_date=None)`
-Logs a repair action performed on a dataset into the `repair_logs` table.
-* **Parameters**:
-  * `upload_id` *(int)*: The ID of the dataset upload (Foreign Key).
-  * `column_name` *(str)*: The column repaired.
-  * `repair_type` *(str)*: The operation applied (e.g. `"Mean Imputation"`, `"Trimmed Whitespace"`).
-  * `repaired_rows` *(int)*: Number of rows modified.
-  * `repair_date` *(str, optional)*: Timestamp. Defaults to current local time.
-* **Returns**: `repair_id` *(int)* or `None` on error.
-
-```python
-save_repair_history(
-    upload_id=1,
-    column_name="age",
-    repair_type="Capped at Maximum (100)",
-    repaired_rows=12
-)
-```
-
----
-
-### 5. Data Retrieval Functions (For APIs & Frontend)
-
-#### `get_upload_history()`
-Fetches all uploaded files ordered from newest to oldest.
-* **Returns**: `list` of rows. Access columns by name:
-  ```python
-  uploads = get_upload_history()
-  for u in uploads:
-      print(u["upload_id"], u["filename"], u["num_rows"])
-  ```
-
-#### `get_quality_issues(upload_id=None)`
-Fetches detected issues. If `upload_id` is given, filters for that upload.
-* **Returns**: `list` of issue rows.
-  ```python
-  issues = get_quality_issues(upload_id=1)
-  for item in issues:
-      print(item["column_name"], item["issue_type"], item["num_issues"])
-  ```
-
-#### `get_repair_history(upload_id=None)`
-Fetches repair logs. If `upload_id` is given, filters for that upload.
-* **Returns**: `list` of repair rows.
-  ```python
-  repairs = get_repair_history(upload_id=1)
-  for r in repairs:
-      print(r["column_name"], r["repair_type"], r["repaired_rows"])
-  ```
-
-#### `get_dataset_summary(upload_id)`
-Calculates a consolidated health and repair metric card for a specific upload.
-* **Returns**: `dict` containing `health_score_pct`, `repair_progress_pct`, `total_issues`, `total_repaired`, `total_cells`, and `status`.
-  ```python
-  summary = get_dataset_summary(upload_id=1)
-  print(summary["health_score_pct"])     # e.g., 98.5%
-  print(summary["repair_progress_pct"])  # e.g., 100.0%
-  ```
-
-#### `export_upload_to_dict(upload_id)`
-Exports upload info + issues + repairs in a single nested dictionary ready for REST API JSON responses:
-  ```python
-  data = export_upload_to_dict(upload_id=1)
-  # Returns: {"summary": {...}, "issues": [...], "repairs": [...]}
-  ```
-
-#### `delete_upload(upload_id)`
-Deletes an upload. Automatically cascades and deletes all related issues and repair logs:
-  ```python
-  success = delete_upload(upload_id=1)
-  ```
-
----
-
-### 6. Terminal Display Functions (For CLI & Demos)
-
-* **`display_upload_history()`**: Prints a formatted table of all uploads.
-* **`display_repair_history(upload_id=None)`**: Prints a formatted table of all repairs.
-
----
-
-## 🗄️ Database Tables Schema
-
-### 1. `uploads`
-| Column | Type | Constraints | Description |
-|---|---|---|---|
-| `upload_id` | `INTEGER` | `PRIMARY KEY AUTOINCREMENT` | Unique upload identifier |
-| `filename` | `TEXT` | `NOT NULL` | Original filename |
-| `upload_time` | `TEXT` | `NOT NULL` | Upload date and time |
-| `num_rows` | `INTEGER` | `NOT NULL` | Total rows in dataset |
-| `num_columns` | `INTEGER` | `NOT NULL` | Total columns in dataset |
-
-### 2. `quality_issues`
-| Column | Type | Constraints | Description |
-|---|---|---|---|
-| `issue_id` | `INTEGER` | `PRIMARY KEY AUTOINCREMENT` | Unique issue identifier |
-| `upload_id` | `INTEGER` | `FOREIGN KEY (uploads)` | Links to the uploaded file |
-| `column_name` | `TEXT` | `NOT NULL` | Name of the column with issues |
-| `issue_type` | `TEXT` | `NOT NULL` | E.g., Missing, Duplicate, Outlier |
-| `num_issues` | `INTEGER` | `NOT NULL` | Count of affected rows |
-
-### 3. `repair_logs`
-| Column | Type | Constraints | Description |
-|---|---|---|---|
-| `repair_id` | `INTEGER` | `PRIMARY KEY AUTOINCREMENT` | Unique repair identifier |
-| `upload_id` | `INTEGER` | `FOREIGN KEY (uploads)` | Links to the uploaded file |
-| `column_name` | `TEXT` | `NOT NULL` | Column that was fixed |
-| `repair_type` | `TEXT` | `NOT NULL` | Operation applied |
-| `repaired_rows` | `INTEGER` | `NOT NULL` | Number of rows modified |
-| `repair_date` | `TEXT` | `NOT NULL` | Timestamp of fix |
-
----
-
-## 🧪 Testing the Database
-
-To run the full test suite and verify functionality, run:
+**Windows PowerShell:**
 
 ```powershell
-python test_database.py
+.venv\Scripts\activate
 ```
+
+### Step 5: Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## ▶️ Running the Application
+
+Start the Streamlit application using:
+
+```bash
+streamlit run frontend/app.py
+```
+
+The application will open in your browser.
+
+---
+
+## 🗄️ Database Architecture
+
+DataFix uses SQLite for persistent storage.
+
+Two database modules are maintained:
+
+### 1. Legacy Database – `database/db.py`
+
+Handles:
+- Uploaded dataset metadata.
+- Detected quality issues.
+- Repair history.
+- Upload and repair summaries.
+
+Tables:
+- `uploads`
+- `quality_issues`
+- `repair_logs`
+
+### 2. Analysis Database – `database/manager.py`
+
+Handles:
+- Analysis sessions.
+- Initial and post-cleaning profiling reports.
+- AI recommendations.
+- Cleaning history.
+- Before-and-after quality comparisons.
+
+Tables:
+- `analysis_runs`
+- `profiling_reports`
+- `ai_recommendations`
+- `cleaning_history`
+- `quality_comparisons`
+
+---
+
+## 🧪 Testing
+
+The project uses Pytest for automated testing.
+
+Run the complete test suite using:
+
+```bash
+python -m pytest
+```
+
+Run an individual test module using:
+
+```bash
+python -m pytest tests/test_cleaning.py
+```
+
+---
+
+## 🎯 Project Objective
+
+The primary objective of DataFix is to simplify data quality management through automated analysis, machine-learning-based anomaly detection, intelligent recommendations, and structured data-cleaning workflows.
+
+The application aims to reduce manual data-cleaning effort while improving data reliability, transparency, and usability.
+
+---
+
+## 👥 Project Information
+
+**Project Name:** DataFix – Autonomous Data Quality Engine
+
+**Category:** AI / Machine Learning / Data Engineering
+
+**Application Type:** Interactive Data Quality Management System

@@ -155,7 +155,7 @@ def persist_cleaning_state() -> None:
 
     for entry in audit_log[start_index:]:
         db.save_cleaning_step(run_id, entry)
-        st.session_state.persisted_audit_count += 1
+        st.session_state.persisted_audit_count +=
 
     # Update cleaned dataset and profile.
     cleaned_df = pipeline.get_cleaned_df()
@@ -837,8 +837,8 @@ elif nav_page == "🧹 Data Cleaning & Remediation":
                 st.rerun()
 
             # Manual Tool: Duplicates
-       elif op_choice == "Duplicate Row Removal":
-    dup_strat = st.selectbox(
+        elif op_choice == "Duplicate Row Removal":
+          dup_strat = st.selectbox(
         "Deduplication strategy:",
         ["drop_first", "drop_last", "drop_all"]
     )
@@ -862,7 +862,7 @@ elif nav_page == "🧹 Data Cleaning & Remediation":
 
             # Manual Tool: Outliers
     elif op_choice == "Outlier Clipping / Filtering":
-    num_cols = [
+     num_cols = [
         c for c in st.session_state.cleaned_df.columns
         if pd.api.types.is_numeric_dtype(st.session_state.cleaned_df[c])
     ]
@@ -911,47 +911,48 @@ elif nav_page == "🧹 Data Cleaning & Remediation":
                 st.rerun()
 
             # Manual Tool: Text
+    
         elif op_choice == "Text Standardization":
             str_cols = [
-        c for c in st.session_state.cleaned_df.columns
-        if pd.api.types.is_string_dtype(st.session_state.cleaned_df[c])
-        or st.session_state.cleaned_df[c].dtype == "object"
-    ]
+                c for c in st.session_state.cleaned_df.columns
+                if pd.api.types.is_string_dtype(st.session_state.cleaned_df[c])
+                or st.session_state.cleaned_df[c].dtype == "object"
+            ]
 
-    if not str_cols:
-        st.info("No text columns available for standardization.")
-    else:
-        sel_text_col = st.selectbox("Select text column:", str_cols)
+            if not str_cols:
+                st.info("No text columns available for standardization.")
+            else:
+                sel_text_col = st.selectbox("Select text column:", str_cols)
 
-        strip_ws = st.checkbox(
-            "Strip leading/trailing whitespace & collapse spaces",
-            value=True
-        )
+                strip_ws = st.checkbox(
+                    "Strip leading/trailing whitespace & collapse spaces",
+                    value=True
+                )
 
-        case_choice = st.selectbox(
-            "Case normalization:",
-            ["None", "title", "lower", "upper"]
-        )
+                case_choice = st.selectbox(
+                    "Case normalization:",
+                    ["None", "title", "lower", "upper"]
+                )
 
-        case_val = None if case_choice == "None" else case_choice
+                case_val = None if case_choice == "None" else case_choice
 
-        rm_special = st.checkbox(
-            "Remove special characters / punctuation",
-            value=False
-        )
+                rm_special = st.checkbox(
+                    "Remove special characters / punctuation",
+                    value=False
+                )
 
-        if st.button("Apply Text Cleaning"):
-            pipeline.clean_text(
-                columns=[sel_text_col],
-                strip_whitespace=strip_ws,
-                case=case_val,
-                remove_special_chars=rm_special
-            )
+                if st.button("Apply Text Cleaning"):
+                    pipeline.clean_text(
+                        columns=[sel_text_col],
+                        strip_whitespace=strip_ws,
+                        case=case_val,
+                        remove_special_chars=rm_special
+                    )
 
-            persist_cleaning_state()
+                    persist_cleaning_state()
 
-            st.success(f"Cleaned text in column '{sel_text_col}'!")
-            st.rerun()
+                    st.success(f"Cleaned text in column '{sel_text_col}'!")
+                    st.rerun()
 
 
 # ---------------------------------------------------------------------------
@@ -1038,3 +1039,16 @@ elif nav_page == "📥 Export & History":
                         )
                     else:
                         st.write(f"Run status: `{session_info['run']['status']}`")
+
+                    with st.expander("View Session Details"):
+                        st.write("**Initial Profiling Report**")
+                        st.json(session_info.get("initial_profile") or {})
+
+                        st.write("**Post-Cleaning Profiling Report**")
+                        st.json(session_info.get("post_cleaning_profile") or {})
+
+                        st.write("**AI Recommendations**")
+                        st.json(session_info.get("recommendations") or [])
+
+                        st.write("**Cleaning History**")
+                        st.json(session_info.get("cleaning_history") or [])
