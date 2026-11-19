@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 """Isolation Forest Anomaly Detection Module for DataFix Engine.
 
 This module provides unsupervised multivariate anomaly detection for tabular data
@@ -167,7 +167,7 @@ def detect_anomalies(
             f"Detected {anomaly_count} multivariate anomaly record(s) ({anomaly_pct}%)."
         ),
     }
-=======
+
 """
 DataFix - Autonomous Data Quality Engine
 Module: Anomaly Detection Engine (anomaly_detector.py)
@@ -185,7 +185,7 @@ from typing import Any, Dict, List, Optional, Union
 import numpy as np
 import pandas as pd
 
-from profiler import load_dataset, _to_serializable
+from ai.profiler import load_dataset, _to_serializable
 
 # Try importing scikit-learn IsolationForest
 try:
@@ -440,4 +440,3 @@ if __name__ == "__main__":
         print(json.dumps(res, indent=2))
     else:
         print("Usage: python anomaly_detector.py <path_to_csv>")
->>>>>>> 292dc96480eda95bafef48059664d729d9d0bcd1

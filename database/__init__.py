@@ -1,10 +1,6 @@
-<<<<<<< HEAD
-"""DataFix Database and Persistence Layer.
+﻿"""DataFix Database and Persistence Layer."""
 
-This package provides relational persistence for analysis runs, profiling reports,
-AI recommendations, cleaning history, and before-and-after quality comparisons using SQLite.
-"""
-
+# Modern database manager
 from database.manager import (
     DatabaseManager,
     DatabaseError,
@@ -13,18 +9,10 @@ from database.manager import (
     safe_json_dumps,
     safe_json_loads,
 )
+
 from database.schema import create_schema
 
-__all__ = [
-    "DatabaseManager",
-    "DatabaseError",
-    "RecordNotFoundError",
-    "DestructiveActionConfirmationRequiredError",
-    "safe_json_dumps",
-    "safe_json_loads",
-    "create_schema",
-=======
-# Database package for DataFix
+# Legacy database functions
 from .db import (
     init_db,
     get_connection,
@@ -43,6 +31,13 @@ from .db import (
 )
 
 __all__ = [
+    "DatabaseManager",
+    "DatabaseError",
+    "RecordNotFoundError",
+    "DestructiveActionConfirmationRequiredError",
+    "safe_json_dumps",
+    "safe_json_loads",
+    "create_schema",
     "init_db",
     "get_connection",
     "save_upload_details",
@@ -57,5 +52,4 @@ __all__ = [
     "display_dataset_summary",
     "delete_upload",
     "export_upload_to_dict",
->>>>>>> 292dc96480eda95bafef48059664d729d9d0bcd1
 ]
