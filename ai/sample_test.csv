@@ -1,0 +1,15 @@
+id,full_name,age,salary,join_date,department,status
+101,John Doe,29,65000,2021-03-15,Engineering,Active
+102,Jane Smith,34,72000,2020/07/20,Marketing,Active
+103,Bob Johnson,41,85000,12-05-2019,engineering,active
+104,Alice Williams,-5,90000,2018-11-01,Marketing,Active
+105,Charlie Brown,,58000,2022-01-10,Sales,Inactive
+106,David Miller,250,62000,2023-04-18,Engineering,Active
+107,Eva Davis,31,9999999,2021-09-25,Finance,Active
+108,Frank Wilson,38,71000,invalid_date,HR,Active
+109,Grace Taylor,27,,2022-08-14, Engineering ,Active
+110,Henry Clark,45,88000,2017-06-30,Sales,Pending
+111,Ivy Adams,33,76000,2020-02-19,,Active
+101,John Doe,29,65000,2021-03-15,Engineering,Active
+112,Jack White,29,65000,2021-03-15,engineering,Active
+113,Karen Black,36,unknown,2019-10-12,Finance,Active
