@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DataFix - Autonomous Data Quality and Repair Engine SaaS Dashboard">
+  <title>DataFix | Autonomous Data Quality &amp; Repair Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="#dashboard" class="brand-logo" id="brandLogoLink" aria-label="Go to Dashboard">
+          <div class="logo-mark">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <span>Data</span><span class="text-purple">Fix</span>
+          </div>
+        </a>
+        <button class="mobile-close-btn" id="mobileCloseBtn" aria-label="Close sidebar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Main Menu</div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="#dashboard" class="nav-link active" data-tab="dashboard">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="9" rx="1"></rect>
+                <rect x="14" y="3" width="7" height="5" rx="1"></rect>
+                <rect x="14" y="12" width="7" height="9" rx="1"></rect>
+                <rect x="3" y="16" width="7" height="5" rx="1"></rect>
+              </svg>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#upload" class="nav-link" data-tab="upload">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <span>Upload Dataset</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#analysis" class="nav-link" data-tab="analysis">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+              <span>Data Analysis</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#repair" class="nav-link" data-tab="repair">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+              </svg>
+              <span>Data Repair</span>
+              <span class="nav-pill">AI Auto</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#reports" class="nav-link" data-tab="reports">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              <span>Reports</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#settings" class="nav-link" data-tab="settings">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="engine-status-card">
+          <div class="status-indicator-wrapper">
+            <span class="pulsing-dot"></span>
+            <span class="status-name">Autonomous Engine</span>
+          </div>
+          <span class="status-detail">v2.4 • Active</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Workspace -->
+    <div class="main-wrapper">
+      <!-- Top Navigation Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="Toggle menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="breadcrumbs">
+            <a href="#dashboard" class="crumb-root" id="crumbRoot">DataFix</a>
+            <span class="crumb-separator">/</span>
+            <span class="crumb-current">Dashboard</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="search-box">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" placeholder="Search datasets, audits..." class="search-input">
+          </div>
+
+          <div class="topbar-actions">
+            <button class="icon-action-btn" title="System Notifications">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span class="notification-badge"></span>
+            </button>
+            <div class="user-pill">
+              <div class="user-avatar">DF</div>
+              <span class="user-name">Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Dashboard Content -->
+      <main class="dashboard-content">
+        <!-- View 1: Dashboard -->
+        <div id="view-dashboard" class="tab-view active">
+          <!-- Welcome Hero Banner -->
+          <section class="welcome-banner">
+            <div class="welcome-text">
+              <div class="welcome-tag">
+                <span class="tag-sparkle">✨</span> System Operational
+              </div>
+              <h1 class="welcome-title">Welcome to <span class="gradient-text">DataFix</span></h1>
+              <p class="welcome-desc">
+                Your autonomous engine is actively monitoring, profiling, and healing enterprise data streams in real time.
+              </p>
+            </div>
+            <div class="welcome-actions">
+              <button class="btn btn-secondary" id="triggerScanBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                </svg>
+                Quick Scan
+              </button>
+              <button class="btn btn-primary" id="newDatasetBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Upload Dataset
+              </button>
+            </div>
+          </section>
+
+          <!-- Metric Stat Cards -->
+          <section class="metrics-grid">
+            <!-- Card 1: Total Datasets -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Total Datasets</span>
+                <div class="metric-icon purple">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-body">
+                <div class="metric-value" id="valTotalDatasets">28</div>
+                <div class="metric-trend positive">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                  </svg>
+                  <span>+4 this week</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Records Analyzed -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Records Analyzed</span>
+                <div class="metric-icon purple-soft">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-body">
+                <div class="metric-value" id="valRecordsAnalyzed">1,482,910</div>
+                <div class="metric-trend positive">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                  </svg>
+                  <span>+18.4% volume</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Errors Detected -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Errors Detected</span>
+                <div class="metric-icon warning">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-body">
+                <div class="metric-value" id="valErrorsDetected">5,248</div>
+                <div class="metric-trend neutral">
+                  <span>0.35% error rate</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4: Records Repaired -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Records Repaired</span>
+                <div class="metric-icon green">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-body">
+                <div class="metric-value" id="valRecordsRepaired">5,192</div>
+                <div class="metric-trend positive">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                  </svg>
+                  <span>98.9% healed</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 5: Data Quality Score -->
+            <div class="metric-card highlight-card">
+              <div class="metric-header">
+                <span class="metric-title">Data Quality Score</span>
+                <div class="metric-icon green-solid">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-body">
+                <div class="quality-score-display">
+                  <span class="metric-value" id="valQualityScore">98.4</span>
+                  <span class="score-denominator">/ 100</span>
+                </div>
+                <div class="score-bar-container">
+                  <div class="score-bar-fill" style="width: 98.4%;"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Charts and Visualizations Section -->
+          <section class="charts-section">
+            <!-- Main Quality Chart -->
+            <div class="dashboard-card chart-card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">Data Quality &amp; Repair Trend</h2>
+                  <p class="card-subtitle">Continuous historical evaluation of dataset health and autonomous repairs</p>
+                </div>
+                <div class="chart-controls">
+                  <button class="pill-btn active" data-period="7d">7D</button>
+                  <button class="pill-btn" data-period="30d">30D</button>
+                  <button class="pill-btn" data-period="90d">90D</button>
+                </div>
+              </div>
+              <div class="chart-canvas-wrapper">
+                <canvas id="qualityChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Error Breakdown Doughnut / Mini Summary -->
+            <div class="dashboard-card mini-chart-card">
+              <div class="card-header">
+                <h2 class="card-title">Error Classifications</h2>
+                <span class="header-tag">Live</span>
+              </div>
+              <div class="donut-wrapper">
+                <canvas id="errorDistributionChart"></canvas>
+              </div>
+              <div class="donut-legend">
+                <div class="legend-item">
+                  <span class="legend-dot" style="background-color: #8b5cf6;"></span>
+                  <span class="legend-label">Missing Values</span>
+                  <span class="legend-val">42%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot" style="background-color: #10b981;"></span>
+                  <span class="legend-label">Type Mismatches</span>
+                  <span class="legend-val">28%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot" style="background-color: #f59e0b;"></span>
+                  <span class="legend-label">Outliers / Invalid</span>
+                  <span class="legend-val">19%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot" style="background-color: #ec4899;"></span>
+                  <span class="legend-label">Duplicate Rows</span>
+                  <span class="legend-val">11%</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Recent Activity Section -->
+          <section class="dashboard-card recent-activity-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Recent Activity</h2>
+                <p class="card-subtitle">Latest datasets processed and autonomous repair actions</p>
+              </div>
+              <button class="text-link-btn" id="viewAllActivityBtn">View Full Audit Log &rarr;</button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Dataset Name</th>
+                    <th>Source / Type</th>
+                    <th>Records</th>
+                    <th>Errors Flagged</th>
+                    <th>Auto-Repaired</th>
+                    <th>Health Score</th>
+                    <th>Status</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody id="activityTableBody">
+                  <tr>
+                    <td>
+                      <div class="table-dataset-name">
+                        <span class="file-icon">📄</span>
+                        <span class="file-title">transactions_q4_2026.csv</span>
+                      </div>
+                    </td>
+                    <td><span class="badge-type">CSV / Pipeline</span></td>
+                    <td>642,800</td>
+                    <td class="text-warning font-semibold">1,824</td>
+                    <td class="text-green font-semibold">1,824 (100%)</td>
+                    <td>
+                      <div class="mini-score">
+                        <span class="score-num font-semibold text-green">99.1%</span>
+                      </div>
+                    </td>
+                    <td><span class="status-pill status-success">Repaired</span></td>
+                    <td class="text-muted">6 mins ago</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table-dataset-name">
+                        <span class="file-icon">📄</span>
+                        <span class="file-title">customer_profiles_master.json</span>
+                      </div>
+                    </td>
+                    <td><span class="badge-type">JSON / API</span></td>
+                    <td>310,450</td>
+                    <td class="text-warning font-semibold">942</td>
+                    <td class="text-green font-semibold">910 (96.6%)</td>
+                    <td>
+                      <div class="mini-score">
+                        <span class="score-num font-semibold text-green">97.8%</span>
+                      </div>
+                    </td>
+                    <td><span class="status-pill status-success">Repaired</span></td>
+                    <td class="text-muted">42 mins ago</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table-dataset-name">
+                        <span class="file-icon">📄</span>
+                        <span class="file-title">sensor_telemetry_batch_89.parquet</span>
+                      </div>
+                    </td>
+                    <td><span class="badge-type">Parquet / Stream</span></td>
+                    <td>512,000</td>
+                    <td class="text-warning font-semibold">2,110</td>
+                    <td class="text-purple font-semibold">In Progress</td>
+                    <td>
+                      <div class="mini-score">
+                        <span class="score-num font-semibold text-purple">Analyzing</span>
+                      </div>
+                    </td>
+                    <td><span class="status-pill status-processing">Processing</span></td>
+                    <td class="text-muted">Just now</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table-dataset-name">
+                        <span class="file-icon">📄</span>
+                        <span class="file-title">healthcare_claims_v3.csv</span>
+                      </div>
+                    </td>
+                    <td><span class="badge-type">CSV / Batch</span></td>
+                    <td>17,660</td>
+                    <td class="text-warning font-semibold">372</td>
+                    <td class="text-green font-semibold">372 (100%)</td>
+                    <td>
+                      <div class="mini-score">
+                        <span class="score-num font-semibold text-green">99.4%</span>
+                      </div>
+                    </td>
+                    <td><span class="status-pill status-success">Repaired</span></td>
+                    <td class="text-muted">2 hours ago</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <!-- View 2: Dataset Upload Page -->
+        <div id="view-upload" class="tab-view hidden">
+          <!-- Page Header -->
+          <section class="page-header">
+            <div class="tag"><span class="tag-sparkle">⚡</span> Data Ingestion &amp; Profiling</div>
+            <h1 class="page-title">Upload <span class="gradient-text">Dataset</span></h1>
+            <p class="page-subtitle">
+              Upload your raw CSV or Excel spreadsheets for autonomous anomaly detection, schema profiling, and intelligent auto-repair.
+            </p>
+          </section>
+
+          <!-- Upload Content Grid -->
+          <div class="upload-grid">
+            <div class="upload-main-col">
+              <!-- Upload Main Card -->
+              <div class="dashboard-card upload-container-card">
+                <!-- Hidden native file input restricted strictly to CSV, XLS, XLSX -->
+                <input type="file" id="datasetFileInput" class="hidden-file-input" accept=".csv, .xls, .xlsx, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+
+                <!-- Drag & Drop Zone -->
+                <div class="drop-zone" id="dropZone">
+                  <div class="upload-illustration">
+                    <div class="icon-orbit-glow"></div>
+                    <div class="upload-icon-circle">
+                      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                    </div>
+                  </div>
+                  <h3 class="drop-zone-title">Drag &amp; drop your dataset file here</h3>
+                  <p class="drop-zone-subtitle">or choose a file from your computer</p>
+
+                  <div class="format-badges">
+                    <span class="format-pill format-csv">
+                      <span class="pill-dot purple"></span> CSV
+                    </span>
+                    <span class="format-pill format-excel">
+                      <span class="pill-dot green"></span> XLS
+                    </span>
+                    <span class="format-pill format-excel">
+                      <span class="pill-dot green"></span> XLSX
+                    </span>
+                    <span class="format-pill format-limit">Max 100 MB</span>
+                  </div>
+
+                  <div class="drop-zone-actions">
+                    <button type="button" class="btn btn-primary" id="browseFilesBtn">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      Browse Files
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Validation / Warning Alert Box -->
+                <div id="uploadAlert" class="upload-alert hidden" role="alert">
+                  <div class="alert-icon" id="alertIcon">⚠️</div>
+                  <div class="alert-content">
+                    <div class="alert-title" id="alertTitle">Invalid File Format</div>
+                    <div class="alert-message" id="alertMessage">Please choose a valid CSV, XLS, or XLSX file.</div>
+                  </div>
+                  <button type="button" class="alert-close-btn" id="closeAlertBtn" aria-label="Dismiss">&times;</button>
+                </div>
+
+                <!-- Selected File Preview Card -->
+                <div id="filePreviewCard" class="file-preview-card hidden">
+                  <div class="preview-header">
+                    <div class="preview-file-icon" id="previewFileIcon">
+                      <span id="previewExtBadge">CSV</span>
+                    </div>
+                    <div class="preview-file-details">
+                      <div class="preview-filename-row">
+                        <span class="preview-filename" id="previewFileName">dataset_sample.csv</span>
+                        <span class="status-pill status-success" id="previewStatus">Ready for Scan</span>
+                      </div>
+                      <div class="preview-meta-row">
+                        <span class="meta-item">Size: <strong id="previewFileSize">0 KB</strong></span>
+                        <span class="meta-separator">•</span>
+                        <span class="meta-item">Format: <strong id="previewFileType">CSV Dataset</strong></span>
+                        <span class="meta-separator">•</span>
+                        <span class="meta-item text-green">✓ Validated</span>
+                      </div>
+                    </div>
+                    <button type="button" class="remove-file-btn" id="removeFileBtn" title="Remove file" aria-label="Remove uploaded file">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                  </div>
+
+                  <!-- Scan Progress Simulation Bar -->
+                  <div id="scanProgressBarWrapper" class="scan-progress-wrapper hidden">
+                    <div class="progress-labels">
+                      <span class="progress-status-text" id="scanStatusText">Parsing tabular schema...</span>
+                      <span class="progress-percentage" id="scanPercentText">0%</span>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill" id="scanProgressFill"></div>
+                    </div>
+                  </div>
+
+                  <!-- Action Bar -->
+                  <div class="preview-actions">
+                    <button type="button" class="btn btn-secondary" id="replaceFileBtn">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      Replace File
+                    </button>
+                    <button type="button" class="btn btn-primary btn-scan" id="scanDatasetBtn">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                      </svg>
+                      <span id="scanBtnText">Scan Dataset</span>
+                    </button>
+                  </div>
+
+                  <!-- Scan Results Summary Report -->
+                  <div id="scanResultsCard" class="scan-results-card hidden">
+                    <div class="results-header">
+                      <div class="results-badge">
+                        <span class="check-icon">✓</span> Anomaly Scan Completed
+                      </div>
+                      <span class="results-time">Execution Time: 320ms</span>
+                    </div>
+                    <div class="results-summary-grid">
+                      <div class="summary-metric">
+                        <span class="sum-label">Records Analyzed</span>
+                        <span class="sum-value" id="resRowCount">1,420</span>
+                      </div>
+                      <div class="summary-metric">
+                        <span class="sum-label">Columns Detected</span>
+                        <span class="sum-value" id="resColCount">16</span>
+                      </div>
+                      <div class="summary-metric">
+                        <span class="sum-label text-warning">Errors &amp; Anomalies</span>
+                        <span class="sum-value text-warning" id="resAnomalyCount">28</span>
+                      </div>
+                      <div class="summary-metric">
+                        <span class="sum-label text-green">Initial Health Score</span>
+                        <span class="sum-value text-green" id="resHealthScore">92.6%</span>
+                      </div>
+                    </div>
+                    <div class="results-action-row">
+                      <button type="button" class="btn btn-primary" id="proceedRepairBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                        </svg>
+                        Proceed to Autonomous Repair &rarr;
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upload Instructions Sidebar -->
+            <div class="upload-instructions-col">
+              <div class="dashboard-card info-guide-card">
+                <h3 class="guide-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-purple">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                  Dataset Guidelines
+                </h3>
+
+                <div class="instructions-list">
+                  <div class="instruction-item">
+                    <div class="inst-step">1</div>
+                    <div class="inst-content">
+                      <h4>Supported Formats</h4>
+                      <p>Only standard comma-separated values (<strong>.csv</strong>) and Excel workbooks (<strong>.xls, .xlsx</strong>) are accepted.</p>
+                    </div>
+                  </div>
+
+                  <div class="instruction-item">
+                    <div class="inst-step">2</div>
+                    <div class="inst-content">
+                      <h4>Header Consistency</h4>
+                      <p>The first row must contain clean, non-empty column headers for automatic schema generation.</p>
+                    </div>
+                  </div>
+
+                  <div class="instruction-item">
+                    <div class="inst-step">3</div>
+                    <div class="inst-content">
+                      <h4>Automated Quality Checks</h4>
+                      <p>Scanning detects missing values, type conflicts, syntax outliers, and duplicates.</p>
+                    </div>
+                  </div>
+
+                  <div class="instruction-item">
+                    <div class="inst-step">4</div>
+                    <div class="inst-content">
+                      <h4>File Capacity &amp; Privacy</h4>
+                      <p>Files up to 100MB are processed locally in compliance with strict data security guidelines.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View 3: Data Analysis Page -->
+        <div id="view-analysis" class="tab-view hidden">
+          <!-- Page Header & Top Toolbar -->
+          <section class="page-header analysis-page-header">
+            <div class="header-content-left">
+              <div class="tag"><span class="tag-sparkle">⚡</span> Anomaly Detection &amp; Diagnostics</div>
+              <h1 class="page-title">Data <span class="gradient-text">Analysis</span> &amp; Quality Audit</h1>
+              <p class="page-subtitle">
+                In-depth automated inspection of missing fields, duplicate entries, schema formatting violations, and statistical anomalies.
+              </p>
+            </div>
+            <div class="header-actions-right">
+              <div class="active-dataset-chip">
+                <span class="file-icon">📄</span>
+                <div class="chip-info">
+                  <span class="chip-name">sales_transactions_q4.csv</span>
+                  <span class="chip-records">642,800 records loaded</span>
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary" id="analysisScanBtn">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span id="analysisScanBtnText">Scan Dataset</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Core KPIs Summary -->
+          <section class="metrics-grid analysis-kpi-grid">
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Total Errors Detected</span>
+                <div class="metric-icon warning">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-body">
+                <div class="metric-value text-warning" id="analysisTotalErrors">1,824</div>
+                <div class="metric-trend neutral">
+                  <span>0.28% error frequency in dataset</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="metric-card highlight-card">
+              <div class="metric-header">
+                <span class="metric-title">Data Quality Score</span>
+                <div class="metric-icon green-solid">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-body">
+                <div class="quality-score-display">
+                  <span class="metric-value text-green" id="analysisQualityScore">92.4%</span>
+                  <span class="score-denominator">Integrity Index</span>
+                </div>
+                <div class="score-bar-container">
+                  <div class="score-bar-fill" id="analysisScoreBar" style="width: 92.4%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Critical Violations</span>
+                <div class="metric-icon purple">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-body">
+                <div class="metric-value text-purple" id="analysisCriticalErrors">312</div>
+                <div class="metric-trend positive">
+                  <span class="text-purple">Immediate pipeline blocker</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Auto-Repair Feasibility</span>
+                <div class="metric-icon green">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-body">
+                <div class="metric-value text-green" id="analysisRepairFeasibility">98.9%</div>
+                <div class="metric-trend positive">
+                  <span>1,804 records automatable</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5 Core Error Category Cards Grid -->
+          <section class="category-cards-section">
+            <div class="section-heading-row">
+              <div>
+                <h2 class="sub-heading-title">Data Quality Problems Breakdown</h2>
+                <p class="sub-heading-desc">Select an error category to filter the diagnostic audit log below</p>
+              </div>
+              <button type="button" class="pill-btn active" id="resetCategoryFilterBtn">Show All Categories</button>
+            </div>
+
+            <div class="error-categories-grid">
+              <!-- Category 1: Missing values -->
+              <div class="category-card" data-cat-filter="Missing Values">
+                <div class="cat-card-top">
+                  <div class="cat-icon-badge purple">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </div>
+                  <span class="cat-severity-badge severity-high">High</span>
+                </div>
+                <h3 class="cat-title">1. Missing Values</h3>
+                <div class="cat-stat-row">
+                  <span class="cat-count">684</span>
+                  <span class="cat-share">37.5% of errors</span>
+                </div>
+                <div class="cat-impact">
+                  <span class="impact-label">Primary Fields:</span>
+                  <span class="impact-fields">email, tax_id, phone</span>
+                </div>
+              </div>
+
+              <!-- Category 2: Duplicate records -->
+              <div class="category-card" data-cat-filter="Duplicate Records">
+                <div class="cat-card-top">
+                  <div class="cat-icon-badge pink">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                  </div>
+                  <span class="cat-severity-badge severity-med">Medium</span>
+                </div>
+                <h3 class="cat-title">2. Duplicate Records</h3>
+                <div class="cat-stat-row">
+                  <span class="cat-count">210</span>
+                  <span class="cat-share">11.5% of errors</span>
+                </div>
+                <div class="cat-impact">
+                  <span class="impact-label">Primary Fields:</span>
+                  <span class="impact-fields">transaction_id, session_uuid</span>
+                </div>
+              </div>
+
+              <!-- Category 3: Invalid data formats -->
+              <div class="category-card" data-cat-filter="Invalid Data Formats">
+                <div class="cat-card-top">
+                  <div class="cat-icon-badge red">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                    </svg>
+                  </div>
+                  <span class="cat-severity-badge severity-high">High</span>
+                </div>
+                <h3 class="cat-title">3. Invalid Formats</h3>
+                <div class="cat-stat-row">
+                  <span class="cat-count">412</span>
+                  <span class="cat-share">22.6% of errors</span>
+                </div>
+                <div class="cat-impact">
+                  <span class="impact-label">Primary Fields:</span>
+                  <span class="impact-fields">postal_code, date, ip_address</span>
+                </div>
+              </div>
+
+              <!-- Category 4: Inconsistent values -->
+              <div class="category-card" data-cat-filter="Inconsistent Values">
+                <div class="cat-card-top">
+                  <div class="cat-icon-badge amber">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="16 3 21 3 21 8"></polyline>
+                      <line x1="4" y1="20" x2="21" y2="3"></line>
+                      <polyline points="21 16 21 21 16 21"></polyline>
+                      <line x1="15" y1="15" x2="21" y2="21"></line>
+                      <line x1="4" y1="4" x2="9" y2="9"></line>
+                    </svg>
+                  </div>
+                  <span class="cat-severity-badge severity-med">Medium</span>
+                </div>
+                <h3 class="cat-title">4. Inconsistent Values</h3>
+                <div class="cat-stat-row">
+                  <span class="cat-count">328</span>
+                  <span class="cat-share">18.0% of errors</span>
+                </div>
+                <div class="cat-impact">
+                  <span class="impact-label">Primary Fields:</span>
+                  <span class="impact-fields">state_code, currency, country</span>
+                </div>
+              </div>
+
+              <!-- Category 5: Outliers -->
+              <div class="category-card" data-cat-filter="Outliers">
+                <div class="cat-card-top">
+                  <div class="cat-icon-badge green">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="2"></circle>
+                      <circle cx="19" cy="5" r="2"></circle>
+                      <circle cx="5" cy="19" r="2"></circle>
+                    </svg>
+                  </div>
+                  <span class="cat-severity-badge severity-low">Low</span>
+                </div>
+                <h3 class="cat-title">5. Statistical Outliers</h3>
+                <div class="cat-stat-row">
+                  <span class="cat-count">190</span>
+                  <span class="cat-share">10.4% of errors</span>
+                </div>
+                <div class="cat-impact">
+                  <span class="impact-label">Primary Fields:</span>
+                  <span class="impact-fields">amount_usd, age, duration</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Interactive Diagnostic Charts -->
+          <section class="charts-section analysis-charts-section">
+            <div class="dashboard-card analysis-chart-card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">Error Distribution by Defect Type</h2>
+                  <p class="card-subtitle">Volume breakdown across the 5 core data quality dimensions</p>
+                </div>
+                <span class="header-tag">Diagnostic Mode</span>
+              </div>
+              <div class="chart-canvas-wrapper" style="height: 300px;">
+                <canvas id="analysisCategoryChart"></canvas>
+              </div>
+            </div>
+
+            <div class="dashboard-card analysis-chart-card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">Column Integrity &amp; Health Radar</h2>
+                  <p class="card-subtitle">Percentage of valid records per feature attribute</p>
+                </div>
+                <span class="header-tag">Field Audit</span>
+              </div>
+              <div class="chart-canvas-wrapper" style="height: 300px;">
+                <canvas id="analysisColumnChart"></canvas>
+              </div>
+            </div>
+          </section>
+
+          <!-- Detailed Error Table Section -->
+          <section class="dashboard-card error-table-card">
+            <div class="card-header table-card-header">
+              <div>
+                <h2 class="card-title">Detailed Quality Diagnostics &amp; Audit Log</h2>
+                <p class="card-subtitle">Examine specific flagged records, raw values, and machine-suggested repair actions</p>
+              </div>
+              <div class="table-actions-group">
+                <button type="button" class="btn btn-secondary" id="exportAuditBtn">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  Export Audit (CSV)
+                </button>
+                <button type="button" class="btn btn-primary" id="goToRepairBtn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                  </svg>
+                  Proceed to Repair &rarr;
+                </button>
+              </div>
+            </div>
+
+            <!-- Table Filters Toolbar -->
+            <div class="table-filters-toolbar">
+              <div class="search-box table-search-box">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="errorSearchInput" placeholder="Filter by column, row ID, or value..." class="search-input">
+              </div>
+
+              <div class="filter-dropdowns">
+                <select id="categoryFilterSelect" class="filter-select" aria-label="Filter by Category">
+                  <option value="all">All Categories (5)</option>
+                  <option value="Missing Values">Missing Values</option>
+                  <option value="Duplicate Records">Duplicate Records</option>
+                  <option value="Invalid Data Formats">Invalid Data Formats</option>
+                  <option value="Inconsistent Values">Inconsistent Values</option>
+                  <option value="Outliers">Outliers</option>
+                </select>
+
+                <select id="severityFilterSelect" class="filter-select" aria-label="Filter by Severity">
+                  <option value="all">All Severities</option>
+                  <option value="High">High Severity</option>
+                  <option value="Medium">Medium Severity</option>
+                  <option value="Low">Low Severity</option>
+                </select>
+
+                <button type="button" class="btn btn-secondary btn-sm" id="clearFiltersBtn">Reset Filters</button>
+              </div>
+            </div>
+
+            <!-- Error Records Table -->
+            <div class="table-responsive">
+              <table class="data-table" id="errorsDetailTable">
+                <thead>
+                  <tr>
+                    <th>Row ID</th>
+                    <th>Target Field</th>
+                    <th>Problem Category</th>
+                    <th>Corrupted / Raw Value</th>
+                    <th>Automated Fix Recipe</th>
+                    <th>Severity</th>
+                    <th>Audit Action</th>
+                  </tr>
+                </thead>
+                <tbody id="errorTableBody">
+                  <!-- Row 1: Missing value -->
+                  <tr data-cat="Missing Values" data-sev="High">
+                    <td class="font-mono text-muted">#10,482</td>
+                    <td><span class="field-pill">email</span></td>
+                    <td><span class="cat-pill pill-purple">Missing Values</span></td>
+                    <td><code class="code-val null">&lt;NULL / Empty&gt;</code></td>
+                    <td>Impute via cross-table account profile matching</td>
+                    <td><span class="cat-severity-badge severity-high">High</span></td>
+                    <td><button class="action-table-btn" title="Inspect Anomaly">Inspect</button></td>
+                  </tr>
+
+                  <!-- Row 2: Duplicate record -->
+                  <tr data-cat="Duplicate Records" data-sev="Medium">
+                    <td class="font-mono text-muted">#10,490</td>
+                    <td><span class="field-pill">transaction_id</span></td>
+                    <td><span class="cat-pill pill-pink">Duplicate Records</span></td>
+                    <td><code class="code-val">TXN-98214-US (x2)</code></td>
+                    <td>Merge duplicate logs, preserve latest timestamp</td>
+                    <td><span class="cat-severity-badge severity-med">Medium</span></td>
+                    <td><button class="action-table-btn" title="Inspect Anomaly">Inspect</button></td>
+                  </tr>
+
+                  <!-- Row 3: Invalid format -->
+                  <tr data-cat="Invalid Data Formats" data-sev="High">
+                    <td class="font-mono text-muted">#10,512</td>
+                    <td><span class="field-pill">postal_code</span></td>
+                    <td><span class="cat-pill pill-red">Invalid Data Formats</span></td>
+                    <td><code class="code-val error">90210-INVALID#</code></td>
+                    <td>Regex sanitize to standard 5-digit ZIP format</td>
+                    <td><span class="cat-severity-badge severity-high">High</span></td>
+                    <td><button class="action-table-btn" title="Inspect Anomaly">Inspect</button></td>
+                  </tr>
+
+                  <!-- Row 4: Inconsistent value -->
+                  <tr data-cat="Inconsistent Values" data-sev="Medium">
+                    <td class="font-mono text-muted">#10,544</td>
+                    <td><span class="field-pill">state_code</span></td>
+                    <td><span class="cat-pill pill-amber">Inconsistent Values</span></td>
+                    <td><code class="code-val">california</code></td>
+                    <td>Standardize to ISO uppercase 2-letter code "CA"</td>
+                    <td><span class="cat-severity-badge severity-med">Medium</span></td>
+                    <td><button class="action-table-btn" title="Inspect Anomaly">Inspect</button></td>
+                  </tr>
+
+                  <!-- Row 5: Outlier -->
+                  <tr data-cat="Outliers" data-sev="Low">
+                    <td class="font-mono text-muted">#10,578</td>
+                    <td><span class="field-pill">amount_usd</span></td>
+                    <td><span class="cat-pill pill-green">Outliers</span></td>
+                    <td><code class="code-val warning">$942,800.00 (z=4.8)</code></td>
+                    <td>Flag for winsorization or merchant fraud audit</td>
+                    <td><span class="cat-severity-badge severity-low">Low</span></td>
+                    <td><button class="action-table-btn" title="Inspect Anomaly">Inspect</button></td>
+                  </tr>
+
+                  <!-- Row 6: Invalid format -->
+                  <tr data-cat="Invalid Data Formats" data-sev="High">
+                    <td class="font-mono text-muted">#10,601</td>
+                    <td><span class="field-pill">date_registered</span></td>
+                    <td><span class="cat-pill pill-red">Invalid Data Formats</span></td>
+                    <td><code class="code-val error">2026/31/02</code></td>
+                    <td>Correct impossible day/month sequence to ISO-8601</td>
+                    <td><span class="cat-severity-badge severity-high">High</span></td>
+                    <td><button class="action-table-btn" title="Inspect Anomaly">Inspect</button></td>
+                  </tr>
+
+                  <!-- Row 7: Missing value -->
+                  <tr data-cat="Missing Values" data-sev="High">
+                    <td class="font-mono text-muted">#10,634</td>
+                    <td><span class="field-pill">tax_id</span></td>
+                    <td><span class="cat-pill pill-purple">Missing Values</span></td>
+                    <td><code class="code-val null">&lt;NaN&gt;</code></td>
+                    <td>Query upstream registry or mark non-taxable entity</td>
+                    <td><span class="cat-severity-badge severity-high">High</span></td>
+                    <td><button class="action-table-btn" title="Inspect Anomaly">Inspect</button></td>
+                  </tr>
+
+                  <!-- Row 8: Inconsistent value -->
+                  <tr data-cat="Inconsistent Values" data-sev="Medium">
+                    <td class="font-mono text-muted">#10,670</td>
+                    <td><span class="field-pill">currency</span></td>
+                    <td><span class="cat-pill pill-amber">Inconsistent Values</span></td>
+                    <td><code class="code-val">US Dollar</code></td>
+                    <td>Convert currency representation to ISO-4217 "USD"</td>
+                    <td><span class="cat-severity-badge severity-med">Medium</span></td>
+                    <td><button class="action-table-btn" title="Inspect Anomaly">Inspect</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Table Footer Pagination -->
+            <div class="table-footer-pagination">
+              <span class="pagination-info" id="tableRecordCount">Showing 8 of 1,824 flagged anomalies</span>
+              <div class="pagination-controls">
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <span class="page-ellipsis">...</span>
+                <button class="page-btn">228</button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- View 4: Advanced Data Repair Page -->
+        <div id="view-repair" class="tab-view hidden">
+          <!-- Page Header -->
+          <section class="page-header repair-header-section">
+            <div class="repair-header-left">
+              <div class="tag"><span class="tag-sparkle">🛠️</span> Human-in-the-Loop Remediation</div>
+              <h1 class="page-title">Data <span class="gradient-text">Repair</span> &amp; Correction Studio</h1>
+              <p class="page-subtitle">
+                Review automated correction proposals, approve or reject repairs, and apply validated changes. Original dataset records are never silently modified.
+              </p>
+            </div>
+            <div class="repair-header-right">
+              <button type="button" class="btn btn-primary btn-apply-repairs" id="applyRepairsBtn" disabled>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span id="applyRepairsBtnText">Apply Approved Repairs (0)</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Explicit Approval Safety Notice -->
+          <div class="safety-notice-banner">
+            <div class="safety-icon">🛡️</div>
+            <div class="safety-text">
+              <strong>Explicit Human-in-the-Loop Approval Required:</strong>
+              All corrected values below are AI-generated suggestions. Original dataset values remain unmodified until you approve specific rows and click <em>Apply Approved Repairs</em>.
+            </div>
+          </div>
+
+          <!-- Toast Notification Container -->
+          <div id="repairToast" class="repair-toast hidden" role="alert">
+            <div class="toast-icon">✓</div>
+            <div class="toast-content">
+              <div class="toast-title" id="toastTitle">Repairs Applied Successfully</div>
+              <div class="toast-message" id="toastMessage">4 corrections committed to dataset. Health score improved to 99.1%.</div>
+            </div>
+            <button type="button" class="toast-close-btn" id="closeToastBtn" aria-label="Dismiss">&times;</button>
+          </div>
+
+          <!-- Repair Management & Table Card -->
+          <section class="dashboard-card repair-table-card">
+            <!-- Repair Actions & Filter Bar -->
+            <div class="repair-toolbar">
+              <div class="repair-summary-stats">
+                <span class="stat-pill">Total Proposals: <strong id="totalProposalsCount">8</strong></span>
+                <span class="stat-pill pill-approved">Approved: <strong id="approvedCount">0</strong></span>
+                <span class="stat-pill pill-rejected">Rejected: <strong id="rejectedCount">0</strong></span>
+                <span class="stat-pill pill-pending">Pending Review: <strong id="pendingCount">8</strong></span>
+              </div>
+
+              <div class="repair-bulk-controls">
+                <button type="button" class="btn btn-secondary btn-sm" id="bulkApproveBtn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-green">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Approve Selected
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="bulkRejectBtn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-warning">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                  Reject Selected
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="resetRepairsBtn">Reset All</button>
+              </div>
+            </div>
+
+            <!-- The Required Data Repair Table -->
+            <div class="table-responsive">
+              <table class="data-table repair-data-table" id="repairTable">
+                <thead>
+                  <tr>
+                    <th class="th-checkbox">
+                      <input type="checkbox" id="selectAllCheckbox" title="Select All Rows" aria-label="Select all rows">
+                    </th>
+                    <th>Row Number</th>
+                    <th>Column Name</th>
+                    <th>Original Value</th>
+                    <th>Suggested Corrected Value</th>
+                    <th>Error Type</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="repairTableBody">
+                  <!-- Row 1: Missing Value Example from prompt -->
+                  <tr data-row-id="10482" data-error-type="Missing Value">
+                    <td class="td-checkbox">
+                      <input type="checkbox" class="row-checkbox" aria-label="Select row 10482">
+                    </td>
+                    <td class="font-mono text-muted">10,482</td>
+                    <td><span class="field-pill">email</span></td>
+                    <td><code class="code-val null">NULL</code></td>
+                    <td>
+                      <div class="suggested-val-cell">
+                        <span class="suggestion-tag">AI Suggestion</span>
+                        <code class="code-val suggested">Not Provided</code>
+                      </div>
+                    </td>
+                    <td><span class="cat-pill pill-purple">Missing Value</span></td>
+                    <td>
+                      <div class="row-action-btns">
+                        <button type="button" class="btn-action-icon approve-btn" title="Approve this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                          <span>Approve</span>
+                        </button>
+                        <button type="button" class="btn-action-icon reject-btn" title="Reject this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                          <span>Reject</span>
+                        </button>
+                      </div>
+                      <span class="row-status-badge hidden"></span>
+                    </td>
+                  </tr>
+
+                  <!-- Row 2: Duplicate Record -->
+                  <tr data-row-id="10490" data-error-type="Duplicate Record">
+                    <td class="td-checkbox">
+                      <input type="checkbox" class="row-checkbox" aria-label="Select row 10490">
+                    </td>
+                    <td class="font-mono text-muted">10,490</td>
+                    <td><span class="field-pill">transaction_id</span></td>
+                    <td><code class="code-val">TXN-98214-US (Dupe)</code></td>
+                    <td>
+                      <div class="suggested-val-cell">
+                        <span class="suggestion-tag">AI Suggestion</span>
+                        <code class="code-val suggested">TXN-98214-US-REV1</code>
+                      </div>
+                    </td>
+                    <td><span class="cat-pill pill-pink">Duplicate Record</span></td>
+                    <td>
+                      <div class="row-action-btns">
+                        <button type="button" class="btn-action-icon approve-btn" title="Approve this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                          <span>Approve</span>
+                        </button>
+                        <button type="button" class="btn-action-icon reject-btn" title="Reject this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                          <span>Reject</span>
+                        </button>
+                      </div>
+                      <span class="row-status-badge hidden"></span>
+                    </td>
+                  </tr>
+
+                  <!-- Row 3: Invalid Format -->
+                  <tr data-row-id="10512" data-error-type="Invalid Format">
+                    <td class="td-checkbox">
+                      <input type="checkbox" class="row-checkbox" aria-label="Select row 10512">
+                    </td>
+                    <td class="font-mono text-muted">10,512</td>
+                    <td><span class="field-pill">postal_code</span></td>
+                    <td><code class="code-val error">90210-INVALID#</code></td>
+                    <td>
+                      <div class="suggested-val-cell">
+                        <span class="suggestion-tag">AI Suggestion</span>
+                        <code class="code-val suggested">90210</code>
+                      </div>
+                    </td>
+                    <td><span class="cat-pill pill-red">Invalid Format</span></td>
+                    <td>
+                      <div class="row-action-btns">
+                        <button type="button" class="btn-action-icon approve-btn" title="Approve this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                          <span>Approve</span>
+                        </button>
+                        <button type="button" class="btn-action-icon reject-btn" title="Reject this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                          <span>Reject</span>
+                        </button>
+                      </div>
+                      <span class="row-status-badge hidden"></span>
+                    </td>
+                  </tr>
+
+                  <!-- Row 4: Inconsistent Value -->
+                  <tr data-row-id="10544" data-error-type="Inconsistent Value">
+                    <td class="td-checkbox">
+                      <input type="checkbox" class="row-checkbox" aria-label="Select row 10544">
+                    </td>
+                    <td class="font-mono text-muted">10,544</td>
+                    <td><span class="field-pill">state_code</span></td>
+                    <td><code class="code-val">california</code></td>
+                    <td>
+                      <div class="suggested-val-cell">
+                        <span class="suggestion-tag">AI Suggestion</span>
+                        <code class="code-val suggested">CA</code>
+                      </div>
+                    </td>
+                    <td><span class="cat-pill pill-amber">Inconsistent Value</span></td>
+                    <td>
+                      <div class="row-action-btns">
+                        <button type="button" class="btn-action-icon approve-btn" title="Approve this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                          <span>Approve</span>
+                        </button>
+                        <button type="button" class="btn-action-icon reject-btn" title="Reject this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                          <span>Reject</span>
+                        </button>
+                      </div>
+                      <span class="row-status-badge hidden"></span>
+                    </td>
+                  </tr>
+
+                  <!-- Row 5: Outlier -->
+                  <tr data-row-id="10578" data-error-type="Outlier">
+                    <td class="td-checkbox">
+                      <input type="checkbox" class="row-checkbox" aria-label="Select row 10578">
+                    </td>
+                    <td class="font-mono text-muted">10,578</td>
+                    <td><span class="field-pill">amount_usd</span></td>
+                    <td><code class="code-val warning">$942,800.00</code></td>
+                    <td>
+                      <div class="suggested-val-cell">
+                        <span class="suggestion-tag">AI Suggestion</span>
+                        <code class="code-val suggested">$94,280.00 (Winsorized)</code>
+                      </div>
+                    </td>
+                    <td><span class="cat-pill pill-green">Outlier</span></td>
+                    <td>
+                      <div class="row-action-btns">
+                        <button type="button" class="btn-action-icon approve-btn" title="Approve this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                          <span>Approve</span>
+                        </button>
+                        <button type="button" class="btn-action-icon reject-btn" title="Reject this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                          <span>Reject</span>
+                        </button>
+                      </div>
+                      <span class="row-status-badge hidden"></span>
+                    </td>
+                  </tr>
+
+                  <!-- Row 6: Invalid Format -->
+                  <tr data-row-id="10601" data-error-type="Invalid Format">
+                    <td class="td-checkbox">
+                      <input type="checkbox" class="row-checkbox" aria-label="Select row 10601">
+                    </td>
+                    <td class="font-mono text-muted">10,601</td>
+                    <td><span class="field-pill">date_registered</span></td>
+                    <td><code class="code-val error">2026/31/02</code></td>
+                    <td>
+                      <div class="suggested-val-cell">
+                        <span class="suggestion-tag">AI Suggestion</span>
+                        <code class="code-val suggested">2026-02-28</code>
+                      </div>
+                    </td>
+                    <td><span class="cat-pill pill-red">Invalid Format</span></td>
+                    <td>
+                      <div class="row-action-btns">
+                        <button type="button" class="btn-action-icon approve-btn" title="Approve this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                          <span>Approve</span>
+                        </button>
+                        <button type="button" class="btn-action-icon reject-btn" title="Reject this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                          <span>Reject</span>
+                        </button>
+                      </div>
+                      <span class="row-status-badge hidden"></span>
+                    </td>
+                  </tr>
+
+                  <!-- Row 7: Missing Value -->
+                  <tr data-row-id="10634" data-error-type="Missing Value">
+                    <td class="td-checkbox">
+                      <input type="checkbox" class="row-checkbox" aria-label="Select row 10634">
+                    </td>
+                    <td class="font-mono text-muted">10,634</td>
+                    <td><span class="field-pill">tax_id</span></td>
+                    <td><code class="code-val null">&lt;NaN&gt;</code></td>
+                    <td>
+                      <div class="suggested-val-cell">
+                        <span class="suggestion-tag">AI Suggestion</span>
+                        <code class="code-val suggested">EXEMPT-0000</code>
+                      </div>
+                    </td>
+                    <td><span class="cat-pill pill-purple">Missing Value</span></td>
+                    <td>
+                      <div class="row-action-btns">
+                        <button type="button" class="btn-action-icon approve-btn" title="Approve this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                          <span>Approve</span>
+                        </button>
+                        <button type="button" class="btn-action-icon reject-btn" title="Reject this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                          <span>Reject</span>
+                        </button>
+                      </div>
+                      <span class="row-status-badge hidden"></span>
+                    </td>
+                  </tr>
+
+                  <!-- Row 8: Inconsistent Value -->
+                  <tr data-row-id="10670" data-error-type="Inconsistent Value">
+                    <td class="td-checkbox">
+                      <input type="checkbox" class="row-checkbox" aria-label="Select row 10670">
+                    </td>
+                    <td class="font-mono text-muted">10,670</td>
+                    <td><span class="field-pill">currency</span></td>
+                    <td><code class="code-val">US Dollar</code></td>
+                    <td>
+                      <div class="suggested-val-cell">
+                        <span class="suggestion-tag">AI Suggestion</span>
+                        <code class="code-val suggested">USD</code>
+                      </div>
+                    </td>
+                    <td><span class="cat-pill pill-amber">Inconsistent Value</span></td>
+                    <td>
+                      <div class="row-action-btns">
+                        <button type="button" class="btn-action-icon approve-btn" title="Approve this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                          <span>Approve</span>
+                        </button>
+                        <button type="button" class="btn-action-icon reject-btn" title="Reject this correction">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                          <span>Reject</span>
+                        </button>
+                      </div>
+                      <span class="row-status-badge hidden"></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Table Footer -->
+            <div class="repair-table-footer">
+              <span class="repair-footer-note">
+                <span class="text-green font-semibold">✓ Non-destructive repair</span>: Original values are archived in audit logs before changes are committed.
+              </span>
+              <button type="button" class="btn btn-primary" id="bottomApplyBtn" disabled>
+                Apply Approved Repairs
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <!-- View 5: Professional Reports Page -->
+        <div id="view-reports" class="tab-view hidden">
+          <!-- Page Header -->
+          <section class="page-header reports-header-section">
+            <div class="reports-header-left">
+              <div class="tag"><span class="tag-sparkle">📊</span> Audit &amp; Remediation Report</div>
+              <h1 class="page-title">Data Quality <span class="gradient-text">Reports</span> &amp; Certification</h1>
+              <p class="page-subtitle">
+                Official before-and-after audit logs, quality score improvements, and production-ready clean dataset exports.
+              </p>
+            </div>
+            <div class="reports-header-actions">
+              <button type="button" class="btn btn-secondary" id="downloadReportBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download Quality Report
+              </button>
+              <button type="button" class="btn btn-primary btn-download-clean" id="downloadCleanDatasetBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Download Cleaned Dataset
+              </button>
+            </div>
+          </section>
+
+          <!-- Original Dataset Information Banner -->
+          <section class="dashboard-card dataset-info-card">
+            <div class="card-header info-banner-header">
+              <div class="info-meta-left">
+                <div class="info-badge-icon">📄</div>
+                <div>
+                  <h2 class="card-title">Dataset: <span class="text-purple">sales_transactions_q4.csv</span></h2>
+                  <p class="card-subtitle">Source: Local Ingestion Pipeline • Audited by DataFix Engine v2.4</p>
+                </div>
+              </div>
+              <div class="info-status-pill">
+                <span class="pulsing-dot"></span>
+                <span>Audit Certified • Ready for Production</span>
+              </div>
+            </div>
+
+            <div class="dataset-meta-grid">
+              <div class="meta-data-box">
+                <span class="meta-label">Original File Size</span>
+                <span class="meta-val">42.8 MB</span>
+              </div>
+              <div class="meta-data-box">
+                <span class="meta-label">File Format</span>
+                <span class="meta-val">CSV (UTF-8, Comma)</span>
+              </div>
+              <div class="meta-data-box">
+                <span class="meta-label">Columns Profiled</span>
+                <span class="meta-val">16 attributes</span>
+              </div>
+              <div class="meta-data-box">
+                <span class="meta-label">Ingestion Date</span>
+                <span class="meta-val">Nov 19, 2026 • 15:18 UTC</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Core Report KPI Metrics Grid -->
+          <section class="metrics-grid reports-metrics-grid">
+            <!-- 1. Total Records -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Total Records</span>
+                <div class="metric-icon purple">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-body">
+                <div class="metric-value">642,800</div>
+                <div class="metric-trend neutral">
+                  <span>100% processed without data loss</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Total Errors Detected -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Total Errors Detected</span>
+                <div class="metric-icon warning">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-body">
+                <div class="metric-value text-warning">1,824</div>
+                <div class="metric-trend neutral">
+                  <span>Across 5 problem categories</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Total Errors Repaired -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Total Errors Repaired</span>
+                <div class="metric-icon green">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-body">
+                <div class="metric-value text-green">1,804</div>
+                <div class="metric-trend positive">
+                  <span>98.9% resolution rate</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Remaining Errors -->
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-title">Remaining Errors</span>
+                <div class="metric-icon purple-soft">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-body">
+                <div class="metric-value text-purple">20</div>
+                <div class="metric-trend neutral">
+                  <span>Held for merchant fraud review</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Before & After Quality Score Showcase Card -->
+          <section class="dashboard-card score-comparison-hero-card">
+            <div class="score-comparison-wrapper">
+              <!-- Original Score -->
+              <div class="score-block original-block">
+                <span class="score-label-sub">Original Quality Score</span>
+                <div class="score-big-num">92.4<span class="pct">%</span></div>
+                <div class="score-status-tag warning-tag">Baseline Audit</div>
+                <div class="score-sub-bar">
+                  <div class="score-sub-fill" style="width: 92.4%; background-color: var(--warning-500);"></div>
+                </div>
+              </div>
+
+              <!-- Upgrade Arrow & Delta Pill -->
+              <div class="score-delta-block">
+                <div class="delta-pill">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="19" x2="12" y2="5"></line>
+                    <polyline points="5 12 12 5 19 12"></polyline>
+                  </svg>
+                  <span>+7.3% Uplift</span>
+                </div>
+                <div class="delta-arrow-graphic">&rarr;</div>
+                <span class="delta-text">Autonomous Repair Efficacy</span>
+              </div>
+
+              <!-- Final Score -->
+              <div class="score-block final-block">
+                <span class="score-label-sub">Final Data Quality Score</span>
+                <div class="score-big-num text-green">99.7<span class="pct">%</span></div>
+                <div class="score-status-tag success-tag">✓ Production Certified</div>
+                <div class="score-sub-bar">
+                  <div class="score-sub-fill" style="width: 99.7%; background: linear-gradient(90deg, var(--purple-500), var(--green-400));"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Data Quality Comparison Chart Section -->
+          <section class="dashboard-card report-chart-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Data Quality Comparison: Before vs After Remediation</h2>
+                <p class="card-subtitle">Granular evaluation comparing baseline ingestion vs finalized post-repair data integrity</p>
+              </div>
+              <div class="chart-legend-indicator">
+                <span class="legend-chip purple"><span class="chip-dot"></span> Original Score</span>
+                <span class="legend-chip green"><span class="chip-dot"></span> Final Repaired Score</span>
+              </div>
+            </div>
+            <div class="chart-canvas-wrapper" style="height: 320px;">
+              <canvas id="qualityComparisonChart"></canvas>
+            </div>
+          </section>
+
+          <!-- Error Category Summary Breakdown Table -->
+          <section class="dashboard-card category-summary-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Error Category Resolution Summary</h2>
+                <p class="card-subtitle">Summary of anomalies resolved across the 5 core quality dimensions</p>
+              </div>
+              <span class="header-tag">98.9% Net Clearance</span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table category-summary-table">
+                <thead>
+                  <tr>
+                    <th>Data Quality Problem</th>
+                    <th>Detected</th>
+                    <th>Repaired</th>
+                    <th>Remaining</th>
+                    <th>Remediation Rate</th>
+                    <th>Remediation Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="table-category-name">
+                        <span class="cat-pill pill-purple">Missing Values</span>
+                        <span class="cat-desc-muted">Blank fields, nulls &amp; NaN entries</span>
+                      </div>
+                    </td>
+                    <td class="font-semibold text-warning">684</td>
+                    <td class="font-semibold text-green">684</td>
+                    <td class="text-muted">0</td>
+                    <td>
+                      <div class="rate-bar-wrapper">
+                        <div class="rate-fill" style="width: 100%;"></div>
+                        <span class="rate-text">100.0%</span>
+                      </div>
+                    </td>
+                    <td><span class="status-pill status-success">✓ Fully Resolved</span></td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <div class="table-category-name">
+                        <span class="cat-pill pill-pink">Duplicate Records</span>
+                        <span class="cat-desc-muted">Redundant primary keys &amp; sessions</span>
+                      </div>
+                    </td>
+                    <td class="font-semibold text-warning">210</td>
+                    <td class="font-semibold text-green">210</td>
+                    <td class="text-muted">0</td>
+                    <td>
+                      <div class="rate-bar-wrapper">
+                        <div class="rate-fill" style="width: 100%;"></div>
+                        <span class="rate-text">100.0%</span>
+                      </div>
+                    </td>
+                    <td><span class="status-pill status-success">✓ Fully Resolved</span></td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <div class="table-category-name">
+                        <span class="cat-pill pill-red">Invalid Data Formats</span>
+                        <span class="cat-desc-muted">Postal codes, timestamps &amp; regex errors</span>
+                      </div>
+                    </td>
+                    <td class="font-semibold text-warning">412</td>
+                    <td class="font-semibold text-green">412</td>
+                    <td class="text-muted">0</td>
+                    <td>
+                      <div class="rate-bar-wrapper">
+                        <div class="rate-fill" style="width: 100%;"></div>
+                        <span class="rate-text">100.0%</span>
+                      </div>
+                    </td>
+                    <td><span class="status-pill status-success">✓ Fully Resolved</span></td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <div class="table-category-name">
+                        <span class="cat-pill pill-amber">Inconsistent Values</span>
+                        <span class="cat-desc-muted">State names &amp; non-standard currency codes</span>
+                      </div>
+                    </td>
+                    <td class="font-semibold text-warning">328</td>
+                    <td class="font-semibold text-green">328</td>
+                    <td class="text-muted">0</td>
+                    <td>
+                      <div class="rate-bar-wrapper">
+                        <div class="rate-fill" style="width: 100%;"></div>
+                        <span class="rate-text">100.0%</span>
+                      </div>
+                    </td>
+                    <td><span class="status-pill status-success">✓ Fully Resolved</span></td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <div class="table-category-name">
+                        <span class="cat-pill pill-green">Statistical Outliers</span>
+                        <span class="cat-desc-muted">Amounts &amp; frequencies exceeding 3.0 sigma</span>
+                      </div>
+                    </td>
+                    <td class="font-semibold text-warning">190</td>
+                    <td class="font-semibold text-green">170</td>
+                    <td class="font-semibold text-warning">20</td>
+                    <td>
+                      <div class="rate-bar-wrapper">
+                        <div class="rate-fill" style="width: 89.5%;"></div>
+                        <span class="rate-text">89.5%</span>
+                      </div>
+                    </td>
+                    <td><span class="status-pill status-processing">⚠️ 20 In Review</span></td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr class="summary-total-row">
+                    <td><strong>Total Diagnostics</strong></td>
+                    <td class="text-warning"><strong>1,824</strong></td>
+                    <td class="text-green"><strong>1,804</strong></td>
+                    <td class="text-purple"><strong>20</strong></td>
+                    <td><strong>98.9% Net</strong></td>
+                    <td><span class="status-pill status-success">✓ Ready for Production</span></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </section>
+
+          <!-- Export Artifacts Action Grid -->
+          <section class="reports-download-grid">
+            <div class="dashboard-card export-card">
+              <div class="export-icon-box green">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </div>
+              <div class="export-details">
+                <h3>Cleaned Production Dataset</h3>
+                <p>Fully deduplicated, normalized, and imputed dataset ready for downstream analytics.</p>
+                <div class="export-meta-row">
+                  <span class="badge-type">CSV • 41.9 MB</span>
+                  <span class="badge-type">642,800 clean records</span>
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary" id="cardDownloadCleanBtn">
+                Download Cleaned Dataset (.csv)
+              </button>
+            </div>
+
+            <div class="dashboard-card export-card">
+              <div class="export-icon-box purple">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+              </div>
+              <div class="export-details">
+                <h3>Executive Quality Audit Certificate</h3>
+                <p>Comprehensive audit log certificate detailing schema tests, rule recipes, and before/after metrics.</p>
+                <div class="export-meta-row">
+                  <span class="badge-type">JSON / Report • 120 KB</span>
+                  <span class="badge-type">ISO-8000 Compliant</span>
+                </div>
+              </div>
+              <button type="button" class="btn btn-secondary" id="cardDownloadReportBtn">
+                Download Quality Report (.json)
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <!-- View 6: Settings Page -->
+        <div id="view-settings" class="tab-view hidden">
+          <section class="page-header">
+            <div class="tag"><span class="tag-sparkle">⚙️</span> Engine Configuration</div>
+            <h1 class="page-title">Platform <span class="gradient-text">Settings</span></h1>
+            <p class="page-subtitle">
+              Tune anomaly detection sensitivity thresholds, automated repair boundaries, and integration parameters.
+            </p>
+          </section>
+
+          <div class="dashboard-card settings-card">
+            <h2 class="card-title mb-4">Autonomous Engine Preferences</h2>
+            
+            <div class="settings-group">
+              <div class="setting-item">
+                <div class="setting-text">
+                  <h4>Anomaly Detection Sensitivity</h4>
+                  <p>Threshold for statistical z-score outlier flagging (default: 3.0 sigma).</p>
+                </div>
+                <div class="setting-control">
+                  <input type="range" min="1" max="5" step="0.5" value="3" class="slider-input">
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-text">
+                  <h4>Auto-Commit Imputation</h4>
+                  <p>Automatically approve confidence scores &gt; 95% without manual reviewer sign-off.</p>
+                </div>
+                <div class="setting-control">
+                  <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-text">
+                  <h4>Continuous Stream Monitoring</h4>
+                  <p>Periodically poll active ingestion pipelines for data drift and syntax degradation.</p>
+                </div>
+                <div class="setting-control">
+                  <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-save-row">
+              <button type="button" class="btn btn-primary" id="saveSettingsBtn">Save Configuration</button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Dashboard Footer -->
+      <footer class="dashboard-footer">
+        <p>&copy; 2026 DataFix Autonomous Engine • Enterprise Data Quality &amp; Auto-Repair Platform</p>
+      </footer>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
