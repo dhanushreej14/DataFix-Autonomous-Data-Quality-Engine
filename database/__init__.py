@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 """DataFix Database and Persistence Layer.
 
 This package provides relational persistence for analysis runs, profiling reports,
@@ -23,7 +23,7 @@ __all__ = [
     "safe_json_dumps",
     "safe_json_loads",
     "create_schema",
-=======
+]
 # Database package for DataFix
 from .db import (
     init_db,
@@ -57,5 +57,5 @@ __all__ = [
     "display_dataset_summary",
     "delete_upload",
     "export_upload_to_dict",
->>>>>>> 292dc96480eda95bafef48059664d729d9d0bcd1
+
 ]

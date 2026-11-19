@@ -126,6 +126,7 @@ def process_uploaded_dataset(df: pd.DataFrame, dataset_name: str, file_format: s
         st.session_state.cleaned_df = pipeline.get_cleaned_df()
         st.session_state.cleaned_profile = profile
         st.session_state.applied_rec_ids = set()
+        st.session_state.persisted_audit_count = 0
 
         # 6. Database Persistence
         db: DatabaseManager = st.session_state.db_manager
@@ -138,6 +139,43 @@ def process_uploaded_dataset(df: pd.DataFrame, dataset_name: str, file_format: s
         db.save_profiling_report(run_id, profile, stage="initial")
         db.save_recommendations(run_id, recs)
 
+def persist_cleaning_state() -> None:
+    """Persist new cleaning operations and the latest quality profile."""
+
+    pipeline = st.session_state.pipeline
+    db = st.session_state.db_manager
+    run_id = st.session_state.run_id
+
+    if pipeline is None or run_id is None:
+        return
+
+    # Save only audit entries not previously persisted.
+    audit_log = pipeline.get_audit_log()
+    start_index = st.session_state.persisted_audit_count
+
+    for entry in audit_log[start_index:]:
+        db.save_cleaning_step(run_id, entry)
+        st.session_state.persisted_audit_count += 1
+
+    # Update cleaned dataset and profile.
+    cleaned_df = pipeline.get_cleaned_df()
+    st.session_state.cleaned_df = cleaned_df
+
+    cleaned_profile = profile_dataset(cleaned_df)
+    st.session_state.cleaned_profile = cleaned_profile
+
+    # Save latest profile and quality comparison.
+    db.save_profiling_report(
+        run_id,
+        cleaned_profile,
+        stage="post_cleaning"
+    )
+
+    db.save_quality_comparison(
+        run_id,
+        st.session_state.initial_profile,
+        cleaned_profile
+    )
 
 def generate_sample_dataset() -> pd.DataFrame:
     """Generate an illustrative dirty dataset for instant evaluation."""
@@ -208,6 +246,8 @@ if st.session_state.raw_df is not None:
         st.session_state.pipeline = None
         st.session_state.cleaned_df = None
         st.session_state.applied_rec_ids = set()
+        if "persisted_audit_count" not in st.session_state:
+            st.session_state.persisted_audit_count = 0
         st.rerun()
 else:
     st.sidebar.info("Upload a dataset or load the demo dataset to start.")
@@ -546,11 +586,8 @@ elif nav_page == "🤖 AI Recommendations":
                         st.session_state.applied_rec_ids.update(res.get("applied_ids", []))
 
                         # Record in Database
-                        db: DatabaseManager = st.session_state.db_manager
-                        db.save_cleaning_pipeline_history(st.session_state.run_id, pipeline)
-                        db.save_profiling_report(st.session_state.run_id, st.session_state.cleaned_profile, stage="post_cleaning")
-                        db.save_quality_comparison(st.session_state.run_id, st.session_state.initial_profile, st.session_state.cleaned_profile)
-
+                        # Record cleaning changes in Database
+                        persist_cleaning_state()
                         st.success(f"Applied {res.get('applied_count')} safe recommendations! Check the Data Cleaning tab.")
                         st.rerun()
 
@@ -596,10 +633,8 @@ elif nav_page == "🤖 AI Recommendations":
                             st.session_state.applied_rec_ids.add(rec.id)
 
                             # Database sync
-                            db: DatabaseManager = st.session_state.db_manager
-                            db.save_cleaning_pipeline_history(st.session_state.run_id, pipeline)
-                            db.save_profiling_report(st.session_state.run_id, st.session_state.cleaned_profile, stage="post_cleaning")
-                            db.save_quality_comparison(st.session_state.run_id, st.session_state.initial_profile, st.session_state.cleaned_profile)
+                           # Database sync
+                            persist_cleaning_state()
                             st.success(f"Executed recommendation {rec.id}!")
                             st.rerun()
 
@@ -653,10 +688,8 @@ elif nav_page == "🤖 AI Recommendations":
                                     st.session_state.applied_rec_ids.add(rec.id)
 
                                     # Database sync
-                                    db: DatabaseManager = st.session_state.db_manager
-                                    db.save_cleaning_pipeline_history(st.session_state.run_id, pipeline)
-                                    db.save_profiling_report(st.session_state.run_id, st.session_state.cleaned_profile, stage="post_cleaning")
-                                    db.save_quality_comparison(st.session_state.run_id, st.session_state.initial_profile, st.session_state.cleaned_profile)
+                                    # Database sync
+                                    persist_cleaning_state()
                                     st.success(f"Executed destructive recommendation {rec.id} successfully!")
                                     st.rerun()
                                 except DestructiveOperationBlockedError as err:
@@ -755,61 +788,170 @@ elif nav_page == "🧹 Data Cleaning & Remediation":
             )
 
             # Manual Tool: Missing Values
-            if op_choice == "Missing Values Imputation":
-                cols_with_na = [c for c in st.session_state.cleaned_df.columns if st.session_state.cleaned_df[c].isna().any()]
-                if not cols_with_na:
-                    st.success("No missing values in current dataset!")
-                else:
-                    sel_col = st.selectbox("Select column with missing values:", cols_with_na)
-                    sel_strat = st.selectbox("Imputation strategy:", ["median", "mean", "mode", "constant", "forward_fill", "drop_rows"])
-                    custom_fill = None
-                    if sel_strat == "constant":
-                        custom_fill = st.text_input("Constant fill value:", value="Unknown")
+    if op_choice == "Missing Values Imputation":
+        cols_with_na = [
+            c for c in st.session_state.cleaned_df.columns
+            if st.session_state.cleaned_df[c].isna().any()
+    ]
 
-                    if st.button("Apply Missing Value Imputation"):
-                        pipeline.handle_missing_values(columns=[sel_col], strategy=sel_strat, fill_value=custom_fill)
-                        st.session_state.cleaned_df = pipeline.get_cleaned_df()
-                        st.session_state.cleaned_profile = profile_dataset(st.session_state.cleaned_df)
-                        st.success(f"Applied {sel_strat} imputation to column '{sel_col}'!")
-                        st.rerun()
+    if not cols_with_na:
+        st.success("No missing values in current dataset!")
+    else:
+        sel_col = st.selectbox(
+            "Select column with missing values:",
+            cols_with_na
+        )
+
+        sel_strat = st.selectbox(
+            "Imputation strategy:",
+            ["median", "mean", "mode", "constant", "forward_fill", "drop_rows"]
+        )
+
+        custom_fill = None
+
+        if sel_strat == "constant":
+            custom_fill = st.text_input("Constant fill value:", value="Unknown")
+
+        confirm_drop = True
+
+        if sel_strat == "drop_rows":
+            confirm_drop = st.checkbox(
+                "I understand that rows containing missing values in this column will be deleted."
+            )
+
+        if st.button("Apply Missing Value Imputation"):
+            if not confirm_drop:
+                st.warning("Please confirm before deleting rows.")
+            else:
+                pipeline.handle_missing_values(
+                    columns=[sel_col],
+                    strategy=sel_strat,
+                    fill_value=custom_fill
+                )
+
+                persist_cleaning_state()
+
+                st.success(
+                    f"Applied {sel_strat} imputation to column '{sel_col}'!"
+                )
+                st.rerun()
 
             # Manual Tool: Duplicates
-            elif op_choice == "Duplicate Row Removal":
-                dup_strat = st.selectbox("Deduplication strategy:", ["drop_first", "drop_last", "drop_all"])
-                if st.button("Execute Deduplication"):
-                    pipeline.handle_duplicates(strategy=dup_strat)
-                    st.session_state.cleaned_df = pipeline.get_cleaned_df()
-                    st.session_state.cleaned_profile = profile_dataset(st.session_state.cleaned_df)
-                    st.success(f"Executed deduplication using strategy '{dup_strat}'!")
-                    st.rerun()
+       elif op_choice == "Duplicate Row Removal":
+    dup_strat = st.selectbox(
+        "Deduplication strategy:",
+        ["drop_first", "drop_last", "drop_all"]
+    )
+
+    confirm_duplicates = st.checkbox(
+        "I understand that duplicate rows will be permanently removed."
+    )
+
+    if st.button("Execute Deduplication"):
+        if not confirm_duplicates:
+            st.warning("Please confirm before removing duplicates.")
+        else:
+            pipeline.handle_duplicates(strategy=dup_strat)
+
+            persist_cleaning_state()
+
+            st.success(
+                f"Executed deduplication using strategy '{dup_strat}'!"
+            )
+            st.rerun()
 
             # Manual Tool: Outliers
-            elif op_choice == "Outlier Clipping / Filtering":
-                num_cols = [c for c in st.session_state.cleaned_df.columns if pd.api.types.is_numeric_dtype(st.session_state.cleaned_df[c])]
-                sel_num_col = st.selectbox("Select numerical column:", num_cols)
-                outlier_strat = st.selectbox("Outlier remediation:", ["clip", "drop", "set_null"])
-                iqr_factor = st.slider("IQR Multiplier (factor):", min_value=1.0, max_value=3.0, value=1.5, step=0.1)
-                if st.button("Apply Outlier Remediation"):
-                    pipeline.handle_outliers(columns=[sel_num_col], method="iqr", strategy=outlier_strat, factor=iqr_factor)
-                    st.session_state.cleaned_df = pipeline.get_cleaned_df()
-                    st.session_state.cleaned_profile = profile_dataset(st.session_state.cleaned_df)
-                    st.success(f"Remediated outliers in '{sel_num_col}' using '{outlier_strat}'!")
-                    st.rerun()
+    elif op_choice == "Outlier Clipping / Filtering":
+    num_cols = [
+        c for c in st.session_state.cleaned_df.columns
+        if pd.api.types.is_numeric_dtype(st.session_state.cleaned_df[c])
+    ]
+
+    if not num_cols:
+        st.info("No numerical columns available for outlier remediation.")
+    else:
+        sel_num_col = st.selectbox("Select numerical column:", num_cols)
+
+        outlier_strat = st.selectbox(
+            "Outlier remediation:",
+            ["clip", "drop", "set_null"]
+        )
+
+        iqr_factor = st.slider(
+            "IQR Multiplier (factor):",
+            min_value=1.0,
+            max_value=3.0,
+            value=1.5,
+            step=0.1
+        )
+
+        confirm_outlier_drop = True
+
+        if outlier_strat == "drop":
+            confirm_outlier_drop = st.checkbox(
+                "I understand that rows containing outliers will be deleted."
+            )
+
+        if st.button("Apply Outlier Remediation"):
+            if not confirm_outlier_drop:
+                st.warning("Please confirm before deleting rows.")
+            else:
+                pipeline.handle_outliers(
+                    columns=[sel_num_col],
+                    method="iqr",
+                    strategy=outlier_strat,
+                    factor=iqr_factor
+                )
+
+                persist_cleaning_state()
+
+                st.success(
+                    f"Remediated outliers in '{sel_num_col}' using '{outlier_strat}'!"
+                )
+                st.rerun()
 
             # Manual Tool: Text
-            elif op_choice == "Text Standardization":
-                str_cols = [c for c in st.session_state.cleaned_df.columns if pd.api.types.is_string_dtype(st.session_state.cleaned_df[c]) or st.session_state.cleaned_df[c].dtype == "object"]
-                sel_text_col = st.selectbox("Select text column:", str_cols)
-                strip_ws = st.checkbox("Strip leading/trailing whitespace & collapse spaces", value=True)
-                case_choice = st.selectbox("Case normalization:", ["None", "title", "lower", "upper"])
-                case_val = None if case_choice == "None" else case_choice
-                rm_special = st.checkbox("Remove special characters / punctuation", value=False)
-                if st.button("Apply Text Cleaning"):
-                    pipeline.clean_text(columns=[sel_text_col], strip_whitespace=strip_ws, case=case_val, remove_special_chars=rm_special)
-                    st.session_state.cleaned_df = pipeline.get_cleaned_df()
-                    st.session_state.cleaned_profile = profile_dataset(st.session_state.cleaned_df)
-                    st.success(f"Cleaned text in column '{sel_text_col}'!")
-                    st.rerun()
+        elif op_choice == "Text Standardization":
+            str_cols = [
+        c for c in st.session_state.cleaned_df.columns
+        if pd.api.types.is_string_dtype(st.session_state.cleaned_df[c])
+        or st.session_state.cleaned_df[c].dtype == "object"
+    ]
+
+    if not str_cols:
+        st.info("No text columns available for standardization.")
+    else:
+        sel_text_col = st.selectbox("Select text column:", str_cols)
+
+        strip_ws = st.checkbox(
+            "Strip leading/trailing whitespace & collapse spaces",
+            value=True
+        )
+
+        case_choice = st.selectbox(
+            "Case normalization:",
+            ["None", "title", "lower", "upper"]
+        )
+
+        case_val = None if case_choice == "None" else case_choice
+
+        rm_special = st.checkbox(
+            "Remove special characters / punctuation",
+            value=False
+        )
+
+        if st.button("Apply Text Cleaning"):
+            pipeline.clean_text(
+                columns=[sel_text_col],
+                strip_whitespace=strip_ws,
+                case=case_val,
+                remove_special_chars=rm_special
+            )
+
+            persist_cleaning_state()
+
+            st.success(f"Cleaned text in column '{sel_text_col}'!")
+            st.rerun()
 
 
 # ---------------------------------------------------------------------------
