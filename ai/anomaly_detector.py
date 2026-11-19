@@ -167,7 +167,10 @@ def detect_anomalies(
             f"Detected {anomaly_count} multivariate anomaly record(s) ({anomaly_pct}%)."
         ),
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> b005b4eceb7846f1751da03e782005a3e0d62c12
 """
 DataFix - Autonomous Data Quality Engine
 Module: Anomaly Detection Engine (anomaly_detector.py)
@@ -185,8 +188,12 @@ from typing import Any, Dict, List, Optional, Union
 import numpy as np
 import pandas as pd
 
+<<<<<<< HEAD
 from ai.profiler import load_dataset, _to_serializable
+=======
+>>>>>>> b005b4eceb7846f1751da03e782005a3e0d62c12
 
+from ai.profiler import load_dataset, _to_serializable
 # Try importing scikit-learn IsolationForest
 try:
     from sklearn.ensemble import IsolationForest
@@ -212,7 +219,7 @@ def detect_anomalies(
         Structured JSON-compatible dictionary with flagged anomalies, scores, and explanations.
     """
     try:
-        df = load_dataset(data)
+        df = profiler.load_dataset(data)
     except Exception as e:
         return {
             "status": "error",
@@ -326,7 +333,7 @@ def detect_anomalies(
 
     for idx in anomaly_indices:
         reasons = []
-        row_dict = {str(k): _to_serializable(v) for k, v in df.iloc[idx].to_dict().items()}
+        row_dict = {str(k): profiler._to_serializable(v) for k, v in df.iloc[idx].to_dict().items()}
 
         for col in numeric_cols:
             val = converted_df[col].iloc[idx]
